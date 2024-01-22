@@ -6,7 +6,11 @@ NixOS Workstation
 
 ## Installation
 
-1. Disable Secure Boot and boot a NixOS installer ISO
+1. Disable Secure Boot and boot a NixOS installer UEFI ISO
+
+> [!TIP]
+> You can detect if you're booted in UEFI with:
+> `[ -d /sys/firmware/efi ] && echo "UEFI Boot Detected" || echo "Legacy BIOS Boot Detected"`
 
 1. Set up disks
 
@@ -98,9 +102,11 @@ Physical start:   2186280960
 Resume offset:        533760
 nvim hosts/peregrine/default.nix
 ```
-```
+
+```ini
 boot.kernelParams = [ "resume_offset=533760" ];
 ```
+
 ```sh
 switch
 ```
