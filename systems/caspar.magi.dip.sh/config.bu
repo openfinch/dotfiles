@@ -25,3 +25,28 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
+storage:
+  files:
+    - path: /etc/hostname
+      contents:
+        inline: caspar.magi.dip.sh
+    - path: /etc/systemd/system.conf.d/10-default-env.conf
+      contents:
+        inline: |
+          [Manager]
+          DefaultEnvironment="FOO=bar"
+systemd:
+  units:
+    - name: example.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Example Service
+        After=network.target
+
+        [Service]
+        ExecStart=/usr/bin/echo "Hello, World!"
+        Restart=always
+
+        [Install]
+        WantedBy=multi-user.target
