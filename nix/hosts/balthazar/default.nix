@@ -26,8 +26,8 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+    extraSpecialArgs = { inherit inputs; };
     users.jf = {
-      extraSpecialArgs = { inherit inputs; };
       imports = [ ../../home/common.nix ];
     };
   };
