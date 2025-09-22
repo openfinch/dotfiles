@@ -46,7 +46,7 @@
             # Common settings for all NixOS machines
             ./nix/modules/common.nix
             # Host-specific module dir (expects default.nix)
-            (./nix/hosts + "/" + hostname)
+            (./nix/hosts + "/${hostname}")
           ] ++ modules;
         };
     in
