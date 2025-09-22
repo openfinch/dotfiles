@@ -1,11 +1,7 @@
-let
-  impermanence = builtins.fetchTarball {
-    url =
-      "https://github.com/nix-community/impermanence/archive/master.tar.gz";
-  };
-in {
+{ inputs, ... }:
+{
   # Import the nixos module.
-  imports = [ "${impermanence}/nixos.nix" ];
+  imports = [ "${inputs.impermanence}/nixos.nix" ];
 
   environment.persistence."/nix/persist" = {
     directories = [

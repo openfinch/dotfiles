@@ -3,7 +3,6 @@
   home.stateVersion = "25.05";
 
   imports = [
-  "${inputs.impermanence}/home-manager.nix"
     ./persistence.nix
   ];
 
