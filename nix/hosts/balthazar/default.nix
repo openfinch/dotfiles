@@ -8,6 +8,7 @@
   users.users.jf = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
+    hashedPasswordFile = "/nix/persist/secrets/jf-password.hash";
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJghgtTWcK2pppUJT3fI/vIbfzTAdX6JU0JptGW/K69Y me@joshfinch.com"
     ];
@@ -27,6 +28,7 @@
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = { inherit inputs; };
+    backupFileExtension = "backup";
     users.jf = {
       imports = [ ../../home/common.nix ];
     };
@@ -38,10 +40,15 @@
 
   # Input
   services.libinput.enable = true;
-  # console.keyMap = "us";
-  # services.xserver = {
-  #   xkb.layout = "us,ru";
-  #   xkbVariant = "workman,";
-  #   xkbOptions = "grp:win_space_toggle";
-  # };
+  console.keyMap = "uk";
+  services.xserver = {
+    enable = lib.mkDefault true;
+    xkb.layout = "gb";
+    xkb.variant = "";
+  };
+
+  # Ensure persistent secrets directory exists with strict perms
+  systemd.tmpfiles.rules = [
+    "d /nix/persist/secrets 0700 root root -"
+  ];
 }

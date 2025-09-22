@@ -20,11 +20,11 @@
 
   programs.git = {
     enable = true;
-    userName = "jf";
-    userEmail = "you@example.com"; # TODO: set your real email
+    userName = "Josh Finch";
+    userEmail = "me@joshfinch.com";
     extraConfig = {
       init.defaultBranch = "main";
-      pull.rebase = false;
+      pull.rebase = true;
     };
   };
 

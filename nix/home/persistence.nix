@@ -1,8 +1,8 @@
 { ... }:
 {
-  # Impermanence HM module is imported from nix/home/common.nix.
-  home.persistence."/nix/persist/home/jane" = {
-    directories = [ ".ssh" "Downloads" ];
+  home.persistence."/nix/persist/home/jf" = {
+    allowOther = false;
+    directories = [ ".ssh" ];
     files = [ ".bash_history" ];
   };
 }

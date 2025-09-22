@@ -2,6 +2,7 @@
 {
   environment.persistence."/nix/persist" = {
     directories = [
+      "/var/lib/nixos"
       "/etc/nixos"
       "/etc/NetworkManager/system-connections"
     ];
