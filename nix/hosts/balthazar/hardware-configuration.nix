@@ -1,8 +1,8 @@
-{ config, lib, pkgs, modulePaths, ... }:
+{ config, lib, pkgs, modulesPath, ... }:
 
 {
     imports = [
-        (modulePaths + "/installer/scan/not-detected.nix")
+        (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
     # Boot
