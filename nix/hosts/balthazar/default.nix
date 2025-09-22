@@ -23,7 +23,7 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.jf = { imports = [ "${impermanence}/home-manager.nix" ../../home/common.nix ]; };
+    users.jf = { imports = [ ../../home/common.nix ]; };
   };
 
   # Networking

@@ -82,8 +82,6 @@
         "jf@fedora" = home-manager.lib.homeManagerConfiguration {
           pkgs = mkPkgs "x86_64-linux";
           modules = [
-            # Impermanence HM module for home.persistence options
-            impermanence.homeManagerModules.impermanence
             ./nix/home/common.nix
             { home.username = "jf"; home.homeDirectory = "/home/jf"; }
           ];

@@ -1,8 +1,9 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 {
   home.stateVersion = "25.05";
 
   imports = [
+  "${inputs.impermanence}/home-manager.nix"
     ./persistence.nix
   ];
 
