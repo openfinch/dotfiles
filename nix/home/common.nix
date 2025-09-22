@@ -3,6 +3,7 @@
   home.stateVersion = "25.05";
 
   imports = [
+    inputs.impermanence.homeManagerModules.impermanence
     ./persistence.nix
   ];
 
