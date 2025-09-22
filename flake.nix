@@ -13,9 +13,14 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     impermanence.url = "github:nix-community/impermanence";
+
+    firefox-addons = {
+      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixos-hardware, flake-utils, impermanence }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixos-hardware, flake-utils, impermanence, firefox-addons }:
     let
       inherit (nixpkgs.lib) nixosSystem;
 
@@ -39,8 +44,8 @@
           inherit system;
           pkgs = mkPkgs system;
           specialArgs = {
-    inherit nixos-hardware;
-    inputs = { inherit nixpkgs nixpkgs-unstable home-manager nixos-hardware impermanence; };
+            inherit nixos-hardware;
+            inputs = { inherit nixpkgs nixpkgs-unstable home-manager nixos-hardware impermanence firefox-addons; };
           };
           modules = [
             # Lightweight hostname module
@@ -85,7 +90,7 @@
             ./nix/home/common.nix
             { home.username = "jf"; home.homeDirectory = "/home/jf"; }
           ];
-          extraSpecialArgs = { inputs = { inherit nixpkgs nixpkgs-unstable home-manager impermanence; }; };
+          extraSpecialArgs = { inputs = { inherit nixpkgs nixpkgs-unstable home-manager impermanence firefox-addons; }; };
         };
       };
     };

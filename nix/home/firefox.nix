@@ -1,8 +1,10 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 {
   programs.firefox = {
     enable = true;
     package = pkgs.firefox;
+
+    userChrome = builtins.readFile ./userChrome.css;
 
     # Keep it simple; adjust as you like later
     profiles = {
@@ -44,13 +46,20 @@
             };
           };
         };
-        extensions = with pkgs.firefox-addons; [
-          ublock-origin
-          bitwarden
-          multi-account-containers
-          privacy-badger
-          clearurls
-        ];
+        extensions =
+          if pkgs ? firefox-addons then (with pkgs.firefox-addons; [
+            ublock-origin
+            bitwarden
+            multi-account-containers
+            privacy-badger
+            clearurls
+          ]) else (with inputs.firefox-addons.packages.${pkgs.system}; [
+            ublock-origin
+            bitwarden
+            multi-account-containers
+            privacy-badger
+            clearurls
+          ]);
       };
     };
   };
