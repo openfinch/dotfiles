@@ -23,7 +23,10 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.jf = { imports = [ ../../home/common.nix ]; };
+    users.jf = {
+      extraSpecialArgs = { inherit inputs; };
+      imports = [ ../../home/common.nix ];
+    };
   };
 
   # Networking
