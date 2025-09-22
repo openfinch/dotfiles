@@ -15,7 +15,7 @@
     impermanence.url = "github:nix-community/impermanence";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixos-hardware, flake-utils }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixos-hardware, flake-utils, impermanence }:
     let
       inherit (nixpkgs.lib) nixosSystem;
 
@@ -34,19 +34,21 @@
         ];
       };
 
-      mkNixosHost = { hostname, system ? "x86_64-linux", modules ? [ ] }:
+  mkNixosHost = { hostname, system ? "x86_64-linux", modules ? [ ] }:
         nixosSystem {
           inherit system;
           pkgs = mkPkgs system;
           specialArgs = {
-            inherit nixos-hardware;
-            inputs = { inherit nixpkgs nixpkgs-unstable home-manager nixos-hardware; };
+    inherit nixos-hardware;
+    inputs = { inherit nixpkgs nixpkgs-unstable home-manager nixos-hardware impermanence; };
           };
           modules = [
             # Lightweight hostname module
             ({ ... }: { networking.hostName = hostname; })
             # Common settings for all NixOS machines
             ./nix/modules/common.nix
+            # Impermanence NixOS module available to all hosts
+            impermanence.nixosModules.impermanence
             # Host-specific module dir (expects default.nix)
             (./nix/hosts + "/${hostname}")
           ] ++ modules;
@@ -80,10 +82,12 @@
         "jf@fedora" = home-manager.lib.homeManagerConfiguration {
           pkgs = mkPkgs "x86_64-linux";
           modules = [
+            # Impermanence HM module for home.persistence options
+            impermanence.homeManagerModules.impermanence
             ./nix/home/common.nix
             { home.username = "jf"; home.homeDirectory = "/home/jf"; }
           ];
-          extraSpecialArgs = { inputs = { inherit nixpkgs nixpkgs-unstable home-manager; }; };
+          extraSpecialArgs = { inputs = { inherit nixpkgs nixpkgs-unstable home-manager impermanence; }; };
         };
       };
     };
