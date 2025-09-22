@@ -3,9 +3,19 @@
   services.greetd = {
     enable = true;
     settings = {
+      terminal = {
+        vt = "next"; # Use a VT other than tty1 to avoid boot/getty messages on the greeter
+      };
       default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --theme border=magenta;text=cyan;prompt=green;time=red;action=blue;button=yellow;container=black;input=red --cmd sway";
-        user = "greeter";
+          # Clear VT, then run a minimal, tasteful tuigreet
+          command = ''
+            ${pkgs.bash}/bin/bash -lc "printf '\033c'; exec ${pkgs.greetd.tuigreet}/bin/tuigreet \
+              --time \
+              --greeting 'Welcome' \
+              --asterisks \
+              --remember \
+              --cmd sway"
+          '';
       };
     };
   };

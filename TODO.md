@@ -1,0 +1,4 @@
+- Sound
+- Startup
+    - DHCP Client spam
+    - 5 second delay on grub

@@ -9,9 +9,11 @@
     networkmanagerapplet
     blueman
     alacritty
+  gtklock
+    bemenu
+    j4-dmenu-desktop
   ];
-
-  programs.wofi.enable = true;
+  programs.bemenu.enable = true;
   programs.waybar.enable = true;
 
   # Sway via Home Manager
@@ -23,7 +25,7 @@
     config = {
       modifier = "Mod4"; # Super key
       terminal = "alacritty";
-      menu = "wofi --show drun";
+      menu = "j4-dmenu-desktop --dmenu=\"bemenu -i -p 'Run:' -l 20\"";
 
       input = {
         "type:keyboard" = {
@@ -38,10 +40,10 @@
 
       keybindings = lib.mkOptionDefault {
         "${config.wayland.windowManager.sway.config.modifier}+Return" = "exec alacritty";
-        "${config.wayland.windowManager.sway.config.modifier}+d" = "exec wofi --show drun";
+        "${config.wayland.windowManager.sway.config.modifier}+d" = "exec j4-dmenu-desktop --dmenu=\"bemenu -i -p 'Run:' -l 20\"";
         "${config.wayland.windowManager.sway.config.modifier}+Shift+e" = "exec swaymsg exit";
-        "${config.wayland.windowManager.sway.config.modifier}+l" = "exec swaylock -f -c 000000";
-        "Print" = "exec grim -g "$(slurp)" ~/Pictures/Screenshots/$(date +%F_%T).png";
+        "${config.wayland.windowManager.sway.config.modifier}+l" = "exec gtklock -d";
+        "Print" = "exec grim -g \"$(slurp)\" ~/Pictures/Screenshots/$(date +%F_%T).png";
       };
 
       startup = [
@@ -56,12 +58,11 @@
   services.swayidle = {
     enable = true;
     timeouts = [
-      { timeout = 300; command = "swaylock -f -c 000000"; }
+      { timeout = 300; command = "gtklock -d"; }
       { timeout = 600; command = "swaymsg 'output * dpms off'"; resumeCommand = "swaymsg 'output * dpms on'"; }
     ];
   };
-
-  programs.swaylock.enable = true;
+  # No programs.swaylock: using waylock for a minimal TUI-like lock experience
 
   # Wayland-friendly env
   home.sessionVariables = {
@@ -71,5 +72,6 @@
     QT_QPA_PLATFORM = "wayland";
     SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";
+    BEMENU_BACKEND = "wayland";
   };
 }

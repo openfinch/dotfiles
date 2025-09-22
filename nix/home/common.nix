@@ -6,6 +6,7 @@
     inputs.impermanence.homeManagerModules.impermanence
     ./persistence.nix
     ./sway.nix
+  ./firefox.nix
   ];
 
   programs.home-manager.enable = true;
