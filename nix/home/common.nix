@@ -5,6 +5,7 @@
   imports = [
     inputs.impermanence.homeManagerModules.impermanence
     ./persistence.nix
+    ./sway.nix
   ];
 
   programs.home-manager.enable = true;

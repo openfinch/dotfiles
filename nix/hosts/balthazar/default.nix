@@ -20,6 +20,7 @@
   imports = lib.optional (builtins.pathExists ./hardware-configuration.nix) ./hardware-configuration.nix
     ++ [
           ./persistence.nix
+          ../../modules/greetd.nix
           inputs.home-manager.nixosModules.home-manager
        ];
 
@@ -45,6 +46,25 @@
     enable = lib.mkDefault true;
     xkb.layout = "gb";
     xkb.variant = "";
+    displayManager.lightdm.enable = lib.mkForce false;
+  };
+
+  # Wayland compositor for greetd's tuigreet --cmd sway
+  programs.sway.enable = true;
+
+  # Portals for Wayland (screenshare, file dialogs)
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
+  };
+
+  # PipeWire for audio/screen sharing (if not already enabled elsewhere)
+  services.pipewire = {
+    enable = lib.mkDefault true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = false;
   };
 
   # Ensure persistent secrets directory exists with strict perms
