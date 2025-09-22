@@ -18,8 +18,8 @@
   # Imports
   imports = lib.optional (builtins.pathExists ./hardware-configuration.nix) ./hardware-configuration.nix
     ++ [
-          inputs.home-manager.nixosModules.home-manager
           ./persistence.nix
+          inputs.home-manager.nixosModules.home-manager
        ];
 
   # Home Manager
