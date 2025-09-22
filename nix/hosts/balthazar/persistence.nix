@@ -1,8 +1,5 @@
-{ inputs, ... }:
+{ ... }:
 {
-  # Import the nixos module.
-  imports = [ "${inputs.impermanence}/nixos.nix" ];
-
   environment.persistence."/nix/persist" = {
     directories = [
       "/etc/nixos"
