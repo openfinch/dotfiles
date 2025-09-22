@@ -17,7 +17,10 @@
   
   # Imports
   imports = lib.optional (builtins.pathExists ./hardware-configuration.nix) ./hardware-configuration.nix
-    ++ [ inputs.home-manager.nixosModules.home-manager "./persistence.nix" ];
+    ++ [
+          inputs.home-manager.nixosModules.home-manager
+          ./persistence.nix
+       ];
 
   # Home Manager
   home-manager = {
@@ -35,10 +38,10 @@
 
   # Input
   services.libinput.enable = true;
-  console.keyMap = "us";
-  services.xserver = {
-    xkb.layout = "us,ru";
-    xkbVariant = "workman,";
-    xkbOptions = "grp:win_space_toggle";
-  };
+  # console.keyMap = "us";
+  # services.xserver = {
+  #   xkb.layout = "us,ru";
+  #   xkbVariant = "workman,";
+  #   xkbOptions = "grp:win_space_toggle";
+  # };
 }
