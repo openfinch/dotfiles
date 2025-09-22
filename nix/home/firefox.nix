@@ -1,10 +1,32 @@
 { config, pkgs, lib, inputs, ... }:
-{
+let
+  # Fetch Cascade theme sources; replace sha256 after first build with the value Nix suggests
+  cascadeSrc = pkgs.fetchFromGitHub {
+    owner = "cascadefox";
+    repo = "cascade";
+    rev = "main";
+    sha256 = "sha256-adhwQpPb69wT5SZTmu7VxBbFpM4NNAuz4258k46T4K0=";
+  };
+in {
   programs.firefox = {
     enable = true;
     package = pkgs.firefox;
-
-    userChrome = builtins.readFile ./userChrome.css;
+    # Enterprise policies applied to all profiles
+    policies = {
+      DisableTelemetry = true;
+      DisableFirefoxStudies = true;
+      DisablePocket = true;
+      DontCheckDefaultBrowser = true;
+      PasswordManagerEnabled = false;
+      EnableTrackingProtection = {
+        Value = "strict";
+        Cryptomining = true;
+        Fingerprinting = true;
+        Locked = true;
+      };
+      # Keep Safe Browsing on; omit DisableSafeBrowsing
+      # Optionally enable DoH at policy level later if desired.
+    };
 
     # Keep it simple; adjust as you like later
     profiles = {
@@ -12,55 +34,64 @@
         id = 0;
         name = "default";
         isDefault = true;
-        # Handy defaults
+        # Privacy-focused defaults; tune as needed
         settings = {
-          "browser.startup.homepage" = "https://duckduckgo.com";
+          "browser.contentblocking.category" = "strict";
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-          "browser.shell.checkDefaultBrowser" = false;
-          "browser.download.useDownloadDir" = true;
-          "gfx.webrender.all" = true;
-          "media.ffmpeg.vaapi.enabled" = true;
+          "privacy.donottrackheader.enabled" = true;
+          "privacy.globalprivacycontrol.enabled" = true;
+          "privacy.resistFingerprinting" = true;
+          "privacy.resistFingerprinting.letterboxing" = true;
+          "privacy.partition.serviceWorkers" = true;
+          "privacy.partition.network_state" = true;
+          "beacon.enabled" = false;
+          "network.http.referer.XOriginPolicy" = 2;
+          "network.http.referer.XOriginTrimmingPolicy" = 2;
+          "signon.rememberSignons" = false; # built-in password storage off
+          "dom.security.https_only_mode" = true;
+          "dom.security.https_only_mode_pbm" = true;
+          "media.autoplay.default" = 1; # block audible autoplay
+          "media.autoplay.blocking_policy" = 2;
+          # Keep Safe Browsing protections
+          "browser.safebrowsing.malware.enabled" = true;
+          "browser.safebrowsing.phishing.enabled" = true;
         };
         search = {
-          default = "DuckDuckGo";
+          # Use engine IDs (ddg is DuckDuckGo)
+          default = "ddg";
           engines = {
-            "DuckDuckGo" = {
-              urls = [{ template = "https://duckduckgo.com/?q={searchTerms}"; }];
-              icon = pkgs.fetchurl {
-                url = "https://duckduckgo.com/favicon.ico";
-                sha256 = "sha256-Hc0gKI6q2OQkEsTQxk3Ny0uSZwz0Lr4Uqv0S7kGk2V4=";
-              };
-              definedAliases = [ "ddg" ];
-            };
-            "Nix Packages" = {
+            nixpkgs = {
               urls = [{ template = "https://search.nixos.org/packages?channel=unstable&query={searchTerms}"; }];
               definedAliases = [ "np" ];
             };
-            "Nix Options" = {
+            nix-options = {
               urls = [{ template = "https://search.nixos.org/options?channel=unstable&query={searchTerms}"; }];
               definedAliases = [ "no" ];
             };
-            "Wikipedia" = {
-              urls = [{ template = "https://en.wikipedia.org/wiki/Special:Search?search={searchTerms}"; }];
-              definedAliases = [ "w" ];
-            };
           };
         };
-        extensions =
-          if pkgs ? firefox-addons then (with pkgs.firefox-addons; [
+        extensions = {
+          packages = with inputs.firefox-addons.packages.${pkgs.system}; [
             ublock-origin
-            bitwarden
-            multi-account-containers
-            privacy-badger
             clearurls
-          ]) else (with inputs.firefox-addons.packages.${pkgs.system}; [
-            ublock-origin
-            bitwarden
-            multi-account-containers
-            privacy-badger
-            clearurls
-          ]);
+          ];
+        };
       };
     };
+  };
+
+  # Ensure old chrome dir doesn't block linking
+  home.activation.cleanCascadeChrome = lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+    rm -rf "${config.home.homeDirectory}/.mozilla/firefox/default/chrome"
+  '';
+
+  # Remove old search.json files that would be clobbered by HM
+  home.activation.cleanFirefoxSearchJson = lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+    rm -f "${config.home.homeDirectory}/.mozilla/firefox/default"/search.json.mozlz4{,.backup}
+  '';
+
+  # Link Cascade's chrome assets into the managed profile
+  home.file = {
+    ".mozilla/firefox/default/chrome".source = cascadeSrc + "/chrome";
   };
 }
