@@ -49,6 +49,11 @@
         { command = "nm-applet --indicator"; }
         { command = "blueman-applet"; }
       ];
+
+      window = {
+        titlebar = false;
+        hideEdgeBorders = "both";
+      };
     };
   };
 

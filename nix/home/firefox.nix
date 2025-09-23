@@ -29,13 +29,14 @@ in {
         Locked = [
           "uBlock0@raymondhill.net"
           "clearurls@kevinr"
+          "newtaboverride@agenedia.com"
         ];
       };
-        # Set homepage/start page
-        Homepage = {
-          URL = "https://home.dip.sh/";
-          StartPage = "homepage";
-        };
+      # Set homepage/start page
+      Homepage = {
+        URL = "https://home.dip.sh/";
+        StartPage = "homepage";
+      };
       # Keep Safe Browsing on; omit DisableSafeBrowsing
       # Optionally enable DoH at policy level later if desired.
     };
@@ -53,7 +54,7 @@ in {
           "privacy.donottrackheader.enabled" = true;
           "privacy.globalprivacycontrol.enabled" = true;
           "privacy.resistFingerprinting" = true;
-          "privacy.resistFingerprinting.letterboxing" = true;
+          "privacy.resistFingerprinting.letterboxing" = false;
           "privacy.partition.serviceWorkers" = true;
           "privacy.partition.network_state" = true;
           "beacon.enabled" = false;
@@ -81,9 +82,9 @@ in {
           "browser.startup.homepage_override.mstone" = "ignore";
           "trailhead.firstrun.branches" = "nofirstrun-empty";
           "browser.aboutwelcome.enabled" = false;
-            # Start page / homepage
-            "browser.startup.homepage" = "https://home.dip.sh/";
-            "browser.startup.page" = 1; # 1 = show homepage on startup
+          # Start page / homepage
+          "browser.startup.homepage" = "https://home.dip.sh/";
+          "browser.startup.page" = 1;
         };
         search = {
           # Use engine IDs (ddg is DuckDuckGo)
@@ -104,10 +105,24 @@ in {
           };
         };
         extensions = {
+          force = true;
           packages = with inputs.firefox-addons.packages.${pkgs.system}; [
             ublock-origin
             clearurls
+            new-tab-override
           ];
+          settings."uBlock0@raymondhill.net".settings = {
+            selectedFilterLists = [
+              "ublock-filters"
+              "ublock-badware"
+              "ublock-privacy"
+              "ublock-unbreak"
+              "ublock-quick-fixes"
+            ];
+          };
+          settings."newtaboverride@agenedia.com".settings = {
+            url = "https://home.dip.sh/";
+          };
         };
       };
     };

@@ -7,6 +7,7 @@
     ./persistence.nix
     ./sway.nix
     ./firefox.nix
+    ./discord.nix
   ];
 
   programs.home-manager.enable = true;
