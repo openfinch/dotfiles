@@ -19,6 +19,8 @@
     htop
     ripgrep
     fd
+    lsof
+    inotify-tools
   ];
 
   programs.git = {

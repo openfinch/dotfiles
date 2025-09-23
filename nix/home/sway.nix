@@ -9,9 +9,12 @@
     networkmanagerapplet
     blueman
     alacritty
-  gtklock
+    gtklock
     bemenu
     j4-dmenu-desktop
+    mako
+    fractal
+    gnome-keyring
   ];
   programs.bemenu.enable = true;
 
@@ -25,6 +28,12 @@
       modifier = "Mod4"; # Super key
       terminal = "alacritty";
       menu = "j4-dmenu-desktop --dmenu=\"bemenu -i -p 'Run:' -l 20\"";
+
+      assigns = {
+        "workspace 1: web" = [{app_id = "firefox";}];
+        # "workspace 2: code" = [{app_id = "codium-url-handler";}];
+        "workspace 3: chat" = [{app_id = "org.gnome.Fractal";} {class = "discord";}];
+      };
 
       input = {
         "type:keyboard" = {
