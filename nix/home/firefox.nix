@@ -1,11 +1,11 @@
 { config, pkgs, lib, inputs, ... }:
 let
   # Fetch Cascade theme sources; replace sha256 after first build with the value Nix suggests
-  cascadeSrc = pkgs.fetchFromGitHub {
-    owner = "cascadefox";
-    repo = "cascade";
+  littlefoxSrc = pkgs.fetchFromGitHub {
+    owner = "biglavis";
+    repo = "LittleFox";
     rev = "main";
-    sha256 = "sha256-adhwQpPb69wT5SZTmu7VxBbFpM4NNAuz4258k46T4K0=";
+    sha256 = "sha256-qlLDR1GSWbB5WwSDv/Z8kdQ9ZVvazEmh3gjwYyXhqa4="; # replace after first build
   };
 in {
   programs.firefox = {
@@ -24,6 +24,18 @@ in {
         Fingerprinting = true;
         Locked = true;
       };
+      # Keep required extensions enabled
+      Extensions = {
+        Locked = [
+          "uBlock0@raymondhill.net"
+          "clearurls@kevinr"
+        ];
+      };
+        # Set homepage/start page
+        Homepage = {
+          URL = "https://home.dip.sh/";
+          StartPage = "homepage";
+        };
       # Keep Safe Browsing on; omit DisableSafeBrowsing
       # Optionally enable DoH at policy level later if desired.
     };
@@ -52,14 +64,35 @@ in {
           "dom.security.https_only_mode_pbm" = true;
           "media.autoplay.default" = 1; # block audible autoplay
           "media.autoplay.blocking_policy" = 2;
+          # Ensure sideloaded (Nix-managed) extensions are enabled automatically
+          # 0 = don't auto-disable; 15 enables all scopes
+          "extensions.autoDisableScopes" = 0;
+          "extensions.enabledScopes" = 15;
+          # Avoid post-download prompts for third-party installs
+          "extensions.postDownloadThirdPartyPrompt" = false;
           # Keep Safe Browsing protections
           "browser.safebrowsing.malware.enabled" = true;
           "browser.safebrowsing.phishing.enabled" = true;
+          # Enable the compact mode
+          "browser.compactmode.show" = true;
+          "browser.uidensity" = 1;
+          "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
+          "trailhead.firstrun.didSeeAboutWelcome" = true;
+          "browser.startup.homepage_override.mstone" = "ignore";
+          "trailhead.firstrun.branches" = "nofirstrun-empty";
+          "browser.aboutwelcome.enabled" = false;
+            # Start page / homepage
+            "browser.startup.homepage" = "https://home.dip.sh/";
+            "browser.startup.page" = 1; # 1 = show homepage on startup
         };
         search = {
           # Use engine IDs (ddg is DuckDuckGo)
-          default = "ddg";
+          default = "ddgnoai";
           engines = {
+            ddgnoai = {
+              urls = [{ template = "https://duckduckgo.com/?q={searchTerms}&noai=1"; } { template = "https://noai.duckduckgo.com/?q={searchTerms}"; }];
+              definedAliases = [ "ddg" ];
+            };
             nixpkgs = {
               urls = [{ template = "https://search.nixos.org/packages?channel=unstable&query={searchTerms}"; }];
               definedAliases = [ "np" ];
@@ -81,7 +114,7 @@ in {
   };
 
   # Ensure old chrome dir doesn't block linking
-  home.activation.cleanCascadeChrome = lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+  home.activation.cleanFirefoxChrome = lib.hm.dag.entryBefore [ "linkGeneration" ] ''
     rm -rf "${config.home.homeDirectory}/.mozilla/firefox/default/chrome"
   '';
 
@@ -90,8 +123,8 @@ in {
     rm -f "${config.home.homeDirectory}/.mozilla/firefox/default"/search.json.mozlz4{,.backup}
   '';
 
-  # Link Cascade's chrome assets into the managed profile
+  # Link LittleFox's chrome assets into the managed profile
   home.file = {
-    ".mozilla/firefox/default/chrome".source = cascadeSrc + "/chrome";
+    ".mozilla/firefox/default/chrome".source = littlefoxSrc;
   };
 }

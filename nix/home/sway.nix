@@ -14,7 +14,6 @@
     j4-dmenu-desktop
   ];
   programs.bemenu.enable = true;
-  programs.waybar.enable = true;
 
   # Sway via Home Manager
   wayland.windowManager.sway = {
@@ -47,7 +46,6 @@
       };
 
       startup = [
-        { command = "waybar"; }
         { command = "nm-applet --indicator"; }
         { command = "blueman-applet"; }
       ];
