@@ -32,7 +32,7 @@
       assigns = {
         "workspace 1: web" = [{app_id = "firefox";}];
         # "workspace 2: code" = [{app_id = "codium-url-handler";}];
-        "workspace 3: chat" = [{app_id = "org.gnome.Fractal";} {class = "discord";}];
+        "workspace 3: chat" = [{class = "slack-wayland";} {class = "discord";}];
       };
 
       input = {

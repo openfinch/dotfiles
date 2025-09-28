@@ -8,9 +8,11 @@
     ./sway.nix
     ./firefox.nix
     ./discord.nix
+    ./slack.nix
   ];
 
   programs.home-manager.enable = true;
+  xdg.autostart.enable = true;
 
   # Common packages for all users on all OSes via HM
   home.packages = with pkgs; [
