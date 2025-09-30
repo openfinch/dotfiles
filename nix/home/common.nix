@@ -9,6 +9,7 @@
     ./firefox.nix
     ./discord.nix
     ./slack.nix
+    ./codium.nix
   ];
 
   programs.home-manager.enable = true;
