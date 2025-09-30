@@ -21,12 +21,27 @@ in {
     slackWrapped     # wrapper with Wayland-friendly flags
   ];
 
-  xdg.autostart.entries.slack = {
-    name = "Slack";
-    exec = "${slackWrapped}/bin/slack-wayland";
-    comment = "Start Slack on login";
-  };
+  # Provide an autostart .desktop entry (xdg.autostart.enable is set in common.nix)
+  xdg.configFile."autostart/slack-wayland.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Version=1.0
+    Name=Slack (Wayland)
+    Comment=Start Slack on login
+    Exec=${slackWrapped}/bin/slack-wayland
+    Icon=slack
+    Terminal=false
+    Categories=Network;InstantMessaging;
+    X-GNOME-Autostart-enabled=true
+  '';
 
   programs.zsh.shellAliases.slk = "slack-wayland";
   programs.bash.shellAliases.slk = "slack-wayland";
+
+  home.persistence."/nix/persist/home/jf" = {
+    allowOther = false;
+    directories = [ 
+      ".config/Slack"
+    ];
+  };
 }

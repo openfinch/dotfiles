@@ -31,8 +31,8 @@
 
       assigns = {
         "workspace 1: web" = [{app_id = "firefox";}];
-        # "workspace 2: code" = [{app_id = "codium-url-handler";}];
-        "workspace 3: chat" = [{class = "slack-wayland";} {class = "discord";}];
+        "workspace 2: term" = [{app_id = "Alacritty";}];
+        "workspace 3: chat" = [{class = "Slack";} {class = "discord";}];
       };
 
       input = {
