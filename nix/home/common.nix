@@ -9,11 +9,13 @@
     ./firefox.nix
     ./discord.nix
     ./slack.nix
-    ./codium.nix
   ];
 
   programs.home-manager.enable = true;
   xdg.autostart.enable = true;
+
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfreePredicate = (_: true);
 
   # Common packages for all users on all OSes via HM
   home.packages = with pkgs; [
@@ -24,6 +26,7 @@
     fd
     lsof
     inotify-tools
+    vscodium
   ];
 
   programs.git = {
