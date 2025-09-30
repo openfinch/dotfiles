@@ -9,6 +9,7 @@
     ./firefox.nix
     ./discord.nix
     ./slack.nix
+    ./codium.nix
   ];
 
   programs.home-manager.enable = true;
@@ -26,7 +27,6 @@
     fd
     lsof
     inotify-tools
-    vscodium
   ];
 
   programs.git = {
