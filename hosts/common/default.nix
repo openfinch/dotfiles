@@ -1,6 +1,7 @@
 { config, lib, pkgs, inputs, ... }:
 
 {
+  imports = [ ./user ];
   time.timeZone = "Europe/London";
   i18n.defaultLocale = "en_GB.UTF-8";
 
@@ -35,16 +36,7 @@
     settings.KbdInteractiveAuthentication = false;
     settings.X11Forwarding = false;
   };
-  users.users.jf = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
-    hashedPasswordFile = "/nix/persist/secrets/jf-password.hash";
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJghgtTWcK2pppUJT3fI/vIbfzTAdX6JU0JptGW/K69Y me@joshfinch.com"
-    ];
-  };
-  security.sudo.wheelNeedsPassword = false;
-  users.mutableUsers = false;
+
   # Improve default journald retention
   services.journald.extraConfig = ''
     SystemMaxUse=1G
@@ -61,4 +53,9 @@
       options = "--delete-older-than 7d";
     };
   };
+  environment.systemPackages = with pkgs; [
+    p7zip
+    wget
+  ];
+
 }
