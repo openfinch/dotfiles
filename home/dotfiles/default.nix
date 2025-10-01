@@ -4,6 +4,7 @@ let
   configs = {
     qtile = ./qtile;
     alacritty = ./alacritty;
+    walls = ./walls;
   };
 in
 {
@@ -15,4 +16,8 @@ in
     source = path;
     recursive = true;
   }) configs;
+
+  services.xserver.displayManager.sessionCommands = ''
+    xwallpaper --zoom ~/nixos-dotfiles/walls/wall1.png
+  '';
 }
