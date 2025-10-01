@@ -51,10 +51,7 @@
   };
 
   # Networking
-  networking.hostName = lib.mkDefault "balthazar";
   # Prefer NetworkManager (persists connection profiles under /etc/NetworkManager/system-connections)
-  networking.networkmanager.enable = true;
-  networking.wireless.enable = false;
 
   # Input
   services.libinput.enable = true;
@@ -66,33 +63,8 @@
     displayManager.lightdm.enable = lib.mkForce false;
   };
 
-  # Wayland compositor for greetd's tuigreet --cmd sway
-  programs.sway.enable = true;
-
-  # Portals for Wayland (screenshare, file dialogs)
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-wlr pkgs.gnome-keyring ];
-  };
-
-  services.gnome.gnome-keyring.enable = true;
-  security.pam.services.login.enableGnomeKeyring = true;
-
-  # PipeWire for audio/screen sharing (if not already enabled elsewhere)
-  services.pipewire = {
-    enable = lib.mkDefault true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = false;
-  };
-
   # Ensure persistent secrets directory exists with strict perms
-  systemd.tmpfiles.rules = [
-    "d /nix/persist/secrets 0700 root root -"
-    "d /nix/persist/secrets/wifi 0700 root root -"
-    "d /var/cache/tuigreet 0750 greeter greeter -"
-  ];
+
 
   # Disable extra VTs so nothing repaints over greetd
   systemd.services."getty@tty1".enable = false;

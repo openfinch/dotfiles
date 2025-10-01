@@ -4,8 +4,6 @@ let
 in
 {
     config = lib.mkIf cfg.enable {
-        networking.wireless.extraConfig = ''
-            include=/nix/persist/secrets/wifi/*.conf
-        '';
+
     };
 }

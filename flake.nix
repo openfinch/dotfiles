@@ -1,97 +1,65 @@
 {
-  description = "Dip.sh dotfiles: multi-host Nix flake for NixOS and Home Manager";
+  description = "dotfiles";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
+    nixpkgs.url = "nixpkgs/nixos-25.05";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
-
-    flake-utils.url = "github:numtide/flake-utils";
-
     impermanence.url = "github:nix-community/impermanence";
-
-    firefox-addons = {
-      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+    flake-utils.url = "github:numtide/flake-utils";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nixos-hardware, flake-utils, impermanence, firefox-addons }:
+  outputs = { self, nixpkgs, home-manager, impermanence, nixos-hardware, ... }:
     let
-      inherit (nixpkgs.lib) nixosSystem;
+      lib = nixpkgs.lib;
 
-      mkPkgs = system: import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = [
-          # Expose an "unstable" package set alongside stable
-          (final: prev: {
-            unstable = import nixpkgs-unstable {
-              inherit system;
-              config.allowUnfree = true;
-            };
-          })
-          (import ./nix/pkgs/overlay.nix)
-        ];
-      };
-
-  mkNixosHost = { hostname, system ? "x86_64-linux", modules ? [ ] }:
-        nixosSystem {
-          inherit system;
-          pkgs = mkPkgs system;
-          specialArgs = {
-            inherit nixos-hardware;
-            inputs = { inherit nixpkgs nixpkgs-unstable home-manager nixos-hardware impermanence firefox-addons; };
-          };
-          modules = [
-            # Lightweight hostname module
-            ({ ... }: { networking.hostName = hostname; })
-            # Common settings for all NixOS machines
-            ./nix/modules/common.nix
-            # Impermanence NixOS module available to all hosts
-            impermanence.nixosModules.impermanence
-            # Host-specific module dir (expects default.nix)
-            (./nix/hosts + "/${hostname}")
-          ] ++ modules;
+      # Declare your hosts here
+      hosts = {
+        # Desktop PC
+        casper = {
+          system = "x86_64-linux";
+          modules = [ ./hosts/casper/configuration.nix ];
+          user = "jf";};
+        # Macbook Pro
+        melchior = {
+          system = "x86_64-linux";
+          modules = [ ./hosts/melchior/configuration.nix ];
+          user = "jf";
         };
-    in
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = mkPkgs system;
-      in {
-        # Dev shell with common tools
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [ alejandra nixpkgs-fmt git home-manager deploy-rs ];
-        };
-        formatter = pkgs.alejandra;
-      }
-    ) // {
-      # NixOS hosts
-      nixosConfigurations = {
-        balthazar = mkNixosHost {
-          hostname = "balthazar";
+        # ThinkPad T490
+        balthazar = {
           system = "x86_64-linux";
           modules = [
             nixos-hardware.nixosModules.lenovo-thinkpad-t490
+            ./hosts/balthazar/hardware-configuration.nix
+            ./hosts/balthazar/configuration.nix
           ];
+          user = "jf";
         };
       };
 
-      # Home Manager standalone for non-NixOS hosts
-      homeConfigurations = {
-        # Example: Fedora workstation for user jf
-        "jf@fedora" = home-manager.lib.homeManagerConfiguration {
-          pkgs = mkPkgs "x86_64-linux";
-          modules = [
-            ./nix/home/common.nix
-            { home.username = "jf"; home.homeDirectory = "/home/jf"; }
-          ];
-          extraSpecialArgs = { inputs = { inherit nixpkgs nixpkgs-unstable home-manager impermanence firefox-addons; }; };
+      mkHost = name: cfg:
+        lib.nixosSystem {
+          system = cfg.system;
+          modules =
+            cfg.modules
+            ++ [
+              impermanence.nixosModules.impermanence
+              home-manager.nixosModules.home-manager
+              {
+                home-manager = {
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  users.${cfg.user} = import ./home/default.nix;
+                  backupFileExtension = "bak";
+                };
+              }
+            ];
         };
-      };
+    in {
+      nixosConfigurations = lib.mapAttrs mkHost hosts;
     };
 }
