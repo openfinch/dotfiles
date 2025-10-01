@@ -72,8 +72,11 @@
   # Portals for Wayland (screenshare, file dialogs)
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
+    extraPortals = [ pkgs.xdg-desktop-portal-wlr pkgs.gnome-keyring ];
   };
+
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.login.enableGnomeKeyring = true;
 
   # PipeWire for audio/screen sharing (if not already enabled elsewhere)
   services.pipewire = {

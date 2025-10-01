@@ -27,6 +27,7 @@
     fd
     lsof
     inotify-tools
+    gcr
   ];
 
   programs.git = {
