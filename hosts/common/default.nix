@@ -1,13 +1,8 @@
 { config, lib, pkgs, inputs, ... }:
 
 {
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  networking.hostName = "balthazar";
-  networking.networkmanager.enable = true;
-
   time.timeZone = "Europe/London";
+  i18n.defaultLocale = "en_GB.UTF-8";
 
   services.displayManager.ly.enable = true;
   services.xserver = {
@@ -33,7 +28,6 @@
   };
   systemd.tmpfiles.rules = [
     "d /nix/persist/secrets 0700 root root -"
-    "d /nix/persist/secrets/wifi 0700 root root -"
   ];
   services.openssh = {
     enable = true;
@@ -56,6 +50,15 @@
     SystemMaxUse=1G
     MaxFileSec=7day
   '';
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  system.stateVersion = "25.05";
+  nix = {
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+      auto-optimise-store = true;
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
+  };
 }

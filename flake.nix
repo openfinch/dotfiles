@@ -34,8 +34,7 @@
           system = "x86_64-linux";
           modules = [
             nixos-hardware.nixosModules.lenovo-thinkpad-t490
-            ./hosts/balthazar/hardware-configuration.nix
-            ./hosts/balthazar/configuration.nix
+            ./hosts/balthazar
           ];
           user = "jf";
         };
