@@ -1,24 +1,18 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
-  dotfiles = "${config.home.homeDirectory}/nixos-dotfiles/config";
-  create_symlink = path: config.lib.file.mkOutOfStoreSymlink path;
-
-  # Standard .config/directory
   configs = {
-    qtile = "qtile";
-    # nvim = "nvim";
-    # rofi = "rofi";
-    # alacritty = "alacritty";
-    # picom = "picom";
+    qtile = ./qtile;
+    alacritty = ./alacritty;
   };
 in
-
 {
-  xdg.configFile = builtins.mapAttrs
-    (name: subpath: {
-      source = create_symlink "${dotfiles}/${subpath}";
-      recursive = true;
-    })
-    configs;
+  home.packages = with pkgs; [
+    alacritty
+  ];
+
+  xdg.configFile = lib.mapAttrs (_: path: {
+    source = path;
+    recursive = true;
+  }) configs;
 }
