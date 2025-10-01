@@ -21,12 +21,12 @@
         # Desktop PC
         casper = {
           system = "x86_64-linux";
-          modules = [ ./hosts/casper/configuration.nix ];
+          modules = [ ./hosts/casper ];
           user = "jf";};
         # Macbook Pro
         melchior = {
           system = "x86_64-linux";
-          modules = [ ./hosts/melchior/configuration.nix ];
+          modules = [ ./hosts/melchior ];
           user = "jf";
         };
         # ThinkPad T490
@@ -52,7 +52,7 @@
                 home-manager = {
                   useGlobalPkgs = true;
                   useUserPackages = true;
-                  users.${cfg.user} = import ./home/default.nix;
+                  users.${cfg.user} = import ./home;
                   backupFileExtension = "bak";
                 };
               }

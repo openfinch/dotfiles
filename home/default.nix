@@ -3,12 +3,8 @@
 {
   home.username = "jf";
   home.homeDirectory = "/home/jf";
-  programs.git.enable = true;
+
+  imports = [ ./home.nix ];
+
   home.stateVersion = "25.05";
-  programs.bash = {
-    enable = true;
-    shellAliases = {
-      btw = "echo i use nixos, btw";
-    };
-  };
 }
