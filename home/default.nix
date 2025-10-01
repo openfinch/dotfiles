@@ -5,6 +5,8 @@
   home.homeDirectory = "/home/jf";
 
   imports = [
+    # Stuff that's managed by nix
+    ./programs
     # Stuff that's managed by traditional dotfiles
     ./dotfiles
   ];

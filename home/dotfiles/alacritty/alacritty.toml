@@ -6,7 +6,7 @@ x = 6
 
 [font]
 normal = { family = "JetBrainsMono Nerd Font Propo", style = "Regular" }
-size = 18
+size = 6
 
 [colors.bright]
 black = "#444b6a"

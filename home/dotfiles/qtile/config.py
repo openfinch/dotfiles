@@ -144,7 +144,7 @@ layouts = [
 widget_defaults = dict(
     font="JetBrainsMono Nerd Font Propo Bold",
     # font="Ubuntu Bold",
-    fontsize=14,
+    fontsize=12,
     padding=0,
     background=colors[0],
 )
@@ -166,7 +166,7 @@ screens = [
                     mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn("qtilekeys-yad")},
                 ),
                 widget.Prompt(
-                    font = "Ubuntu Mono",
+                    font = "JetBrainsMono Nerd Font Propo",
                     fontsize=14,
                     foreground = colors[1]
                 ),
@@ -192,7 +192,7 @@ screens = [
                     font = "JetBrainsMono Nerd Font Propo Bold",
                     foreground = colors[9],
                     padding = 2,
-                    fontsize = 14
+                    fontsize = 6
                 ),
                 widget.CurrentLayout(
                     foreground = colors[1],
@@ -203,7 +203,7 @@ screens = [
                     font = "JetBrainsMono Nerd Font Propo Bold",
                     foreground = colors[9],
                     padding = 2,
-                    fontsize = 14
+                    fontsize = 6
                 ),
                 widget.WindowName(
                     foreground = colors[6],
