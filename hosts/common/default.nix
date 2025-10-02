@@ -10,6 +10,9 @@
     # Services
     ./services/openssh.nix
     ./services/pipewire.nix
+    ./services/systemd.nix
+    ./services/gnome-keyring.nix
+    ./services/nix.nix
   ];
 
   time.timeZone = "Europe/London";

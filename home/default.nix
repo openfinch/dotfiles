@@ -5,6 +5,8 @@
   home.homeDirectory = "/home/jf";
 
   imports = [
+    # Impermanence for home manager
+    inputs.impermanence.homeManagerModules.impermanence
     # Stuff that's managed by nix
     ./programs
     # Stuff that's managed by traditional dotfiles
