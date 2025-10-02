@@ -122,7 +122,7 @@ in {
     rm -rf "${config.home.homeDirectory}/.mozilla/firefox/default/chrome"
   '';
   home.activation.cleanFirefoxSearchJson = lib.hm.dag.entryBefore [ "linkGeneration" ] ''
-    rm -f "${config.home.homeDirectory}/.mozilla/firefox/default"/search.json.mozlz4{,.backup}
+    rm -f "${config.home.homeDirectory}/.mozilla/firefox/default"/search.json.mozlz4{,.bak}
   '';
   home.file = {
     ".mozilla/firefox/default/chrome".source = littlefoxSrc;

@@ -7,5 +7,6 @@
     ./codium.nix
     ./git.nix
     ./zsh.nix
+    ./neomutt.nix
   ];
 }

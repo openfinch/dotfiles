@@ -1,9 +1,8 @@
-{
-  services.gnome.keyring.enable = true;
+{pkgs, ...}: {
+  services.gnome.gnome-keyring.enable = true;
 
-  home.persistence."/nix/persist/home/jf" = {
-    allowOther = false;
-    directories = [ ".local/share/keyrings" ];
-    files = [ ];
+  security.pam.services = {
+    login.enableGnomeKeyring = true;
   };
+  services.dbus.packages = [ pkgs.gnome-keyring pkgs.gcr ];
 }

@@ -1,7 +1,5 @@
 { pkgs, lib, ... }:
 {
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "slack" ];
-
   home.packages = with pkgs; [
     slack
   ];
