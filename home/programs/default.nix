@@ -7,6 +7,9 @@
     ./codium.nix
     ./git.nix
     ./zsh.nix
-    ./neomutt.nix
+  ];
+
+  home.packages = with pkgs; [
+    gnupg
   ];
 }
