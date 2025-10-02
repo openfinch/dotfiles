@@ -10,9 +10,13 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    firefox-addons = {
+      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, impermanence, nixos-hardware, ... }:
+  outputs = { self, nixpkgs, home-manager, impermanence, nixos-hardware, firefox-addons, ... } @ inputs:
     let
       lib = nixpkgs.lib;
 
@@ -54,6 +58,7 @@
                   useUserPackages = true;
                   users.${cfg.user} = import ./home;
                   backupFileExtension = "bak";
+                  extraSpecialArgs = { inherit inputs; };
                 };
               }
             ];
